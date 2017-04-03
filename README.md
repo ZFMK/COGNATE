@@ -5,10 +5,8 @@ This repository contains
 	* the actual code.
 - COGNATE.tar.gz 	
 	* the complete package, including code, readme, example data and output and the required, customized GAL library.
-- GAL/ 	
-	* the GAL library, as required by COGNATE in a customized version.
 - Utilities/ 	
-	* COGNATE_CheckDep.pl, a script to check whther all perl dependencies are installed.
+	* COGNATE_CheckDep.pl, a script to check whther all perl dependencies are installed (this is also included in the .tar.gz).
 - LICENSE 	
 - README.md 	
 	* what you read now.
