@@ -317,8 +317,6 @@ Uses GAL by Barry Moore; written by Jeanne Wilbrandt
 
 print $n;
 
-# TODO option documentation
-# TODO rename sumline to batch
 
 # Get options
 my $out_name = '';
@@ -326,7 +324,6 @@ my ($help, $table_switch, $def_overwrite, $batch_name, $no_filecheck,
 	$workingdir, @print, @dont_print, $input, $transcript_choice, $fa_in, $gff_in,
 	);
 
-	# TODO make options a hash?
 my $opt_success = GetOptions('help|h' 				=> \$help,
 							'out_name|name|n=s'		=> \$out_name,
 							'fasta|fa|fa_in=s'		=> \$fa_in,
@@ -397,8 +394,7 @@ if ($help){
 	die "FATAL: Transcript choice must be max (longest), min (shortest) or mid (median)!$n$usage" 
 		if ($transcript_choice !~ /max|min|mid/);
 
-# TODO timestamps
-# TODO progress
+# TODO progress?
 
 #### START #############################################################
 
@@ -441,7 +437,7 @@ foreach $out_name (keys %input) {
 		
 		my ($feature_file, $fasta_file) = @{$input{$out_name}};
 	
-		#### TODO only fasta
+		#### TODO only fasta?!
 		
 		## Check file validity
 		if (!$no_filecheck) {
