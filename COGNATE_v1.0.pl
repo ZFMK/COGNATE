@@ -1447,7 +1447,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 			print $out_summary "N50${t}L50${t}N75${t}L75${t}N90${t}L90$n";
 			print $out_summary "$N50${t}$L50${t}$N75${t}$L75${t}$N90${t}$L90$n$n";
 			
-			print $out_summary "L90[genes]${t}$L90_genes$n$n";
+			print $out_summary "L90pcG${t}$L90_genes$n$n";
 			
 			# Intron distribution a la Roy & Penny 2007
 			print $out_summary "# INTRON LENGTH DISTRIBUTION  (see Roy & Penny 2007)$n";
@@ -2755,10 +2755,14 @@ sub assembly_NL {
 	
 	my $N = 0;
 	my $L = 0;
+	my $sumN = 0;
 	
 	foreach my $length (@{$lengths_REF}) {
+		# Remember last added length (if goal is reached, this is N)
+		$N = $length;
+	
 		# Add up lengths, beginning with the largest
-		$N += $length;
+		$sumN += $length;
 		
 		# Count number of lengths added
 		++ $L;
