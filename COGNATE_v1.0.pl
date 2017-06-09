@@ -1391,7 +1391,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 			}
 			next unless %counts;
 			# Print counts for child types
-			print $out_summary  "Type: $type$n";
+			print $out_summary  "Type: $type${t}${t}", scalar $type_rs, $n;
 			for my $child_type (keys %counts) {
 				print $out_summary  "${t}Child Type: $child_type${t}" . $counts{$child_type};
 				
@@ -3223,12 +3223,12 @@ sub calculate_CpG_oe{
 
  No bugs have been reported, although there certainly are some.
 
- Please report any bugs or feature requests to <j.wilbrandt@zfmk.de>
+ Please report any bugs or feature requests to <j.wilbrandt@leibniz-zfmk.de>
 
 
 =head1 AUTHOR
 
- Jeanne Wilbrandt  <j.wilbrandt@zfmk.de>
+ Jeanne Wilbrandt  <j.wilbrandt@leibniz-zfmk.de>
 
 =head1 LICENSE AND COPYRIGHT
 
