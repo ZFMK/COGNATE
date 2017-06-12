@@ -1253,7 +1253,7 @@ foreach $out_name (keys %input) {
 			my ($N75, $L75) = assembly_NL(\@sorted_scaff_lengths, $assembly_length*0.75);
 			my ($N90, $L90) = assembly_NL(\@sorted_scaff_lengths, $assembly_length*0.9);
 	
-		## L90(genes)
+		## L90pcG / L90[genes]
 			
 			### Get counts of genes on scaffolds
 			my %genes_on_scaff;
