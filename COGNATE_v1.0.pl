@@ -973,14 +973,14 @@ foreach $out_name (keys %input) {
 			push @{$transcript_features{$transcript_id}}, ($cds_count, $added_cds_length, $med_cds_length, $avg_cds_length, 
 												$med_cds_gc, $avg_cds_gc, $med_cds_gc_noam, $avg_cds_gc_noam, $med_cds_CpGoe, 
 												$cds_coverage, $cds_density); 
-			$scaff_features{$transcript_scaff}[9] += $added_cds_length;	 
+			$scaff_features{$transcript_scaff}[10] += $added_cds_length;	 
 		}
 	  
 	  
 		# If no CDS is present for this transcript, give undef (-> empty cell) to storage hash
 		else {
 			push @{$transcript_features{$transcript_id}}, (0, 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA'); 
-			$scaff_features{$transcript_scaff}[9] += 0;
+			$scaff_features{$transcript_scaff}[10] += 0;
 		}
 	  
 	  
@@ -1053,13 +1053,13 @@ foreach $out_name (keys %input) {
 			push @{$transcript_features{$transcript_id}}, ($e_count, $added_e_length, $med_e_length, $avg_e_length,
 											$med_e_gc, $avg_e_gc, $med_e_gc_noam, $avg_e_gc_noam, $med_e_CpGoe,
 											$e_coverage, $e_density);
-			$scaff_features{$transcript_scaff}[20] += $added_e_length;
+			$scaff_features{$transcript_scaff}[14] += $added_e_length;
 		}
 		
 		# If no exons are present for this transcript, give undef (-> empty cell) to storage hash
 		else {
 			push @{$transcript_features{$transcript_id}}, (0, 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA');
-			$scaff_features{$transcript_scaff}[20] += 0;
+			$scaff_features{$transcript_scaff}[14] += 0;
 		}
 	  
 ###  Go through Introns per transcript ####################
@@ -1128,13 +1128,13 @@ foreach $out_name (keys %input) {
 			push @{$transcript_features{$transcript_id}}, ($i_count, $added_i_length, $med_i_length, $avg_i_length, 
 												$med_i_gc, $avg_i_gc, $med_i_gc_noam, $avg_i_gc_noam, $med_i_CpGoe,
 												$i_coverage, $i_density);
-			$scaff_features{$transcript_scaff}[31] += $added_i_length;  
+			$scaff_features{$transcript_scaff}[18] += $added_i_length;  
 		}
 		
 		# If no introns are present for this transcript, give undef (-> empty cell) to storage hash
 		else { 
 			push @{$transcript_features{$transcript_id}}, (0, 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA', 'NA');
-			$scaff_features{$transcript_scaff}[31] += 0;
+			$scaff_features{$transcript_scaff}[18] += 0;
 		}
 		
 		
