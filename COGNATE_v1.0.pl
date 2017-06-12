@@ -1813,10 +1813,10 @@ foreach my $trnscrpt (keys %transcript_loci) {
 										"N50${t}L50${t}N75${t}L75${t}N90${t}L90${t}". 
 										"L90(genes)${t}". 
 										"Scaffold count (total)${t}".
-										"Gene count (total)${t}".
-										"CDS count (total)${t}".
-										"Exon count (total)${t}".
-										"Intron count (total)${t}".
+										"Gene count (analyzed)${t}".
+										"CDS count (analyzed)${t}".
+										"Exon count (analyzed)${t}".
+										"Intron count (analyzed)${t}".
 										"3n intron count${t}3n+1 intron count${t}".
 										"3n+2 intron count${t}Excess 3n intron fraction${t}Deviation from expected 3n intron fraction${n}";
 										
