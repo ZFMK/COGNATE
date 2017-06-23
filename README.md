@@ -2,7 +2,7 @@
 
 This repository contains
 - COGNATE_v1.0.pl 	
-	* the actual code.
+	* the actual code. Cannot run without GAL! (-> download tar.gz if you do not have it yet)
 - COGNATE.tar.gz 	
 	* the complete package, including code, readme, example data and output and the required, customized GAL library.
 - Utilities/ 	
