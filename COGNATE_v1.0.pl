@@ -1302,6 +1302,7 @@ foreach $out_name (keys %input) {
 		## DevExp 3n:	Fraction of 3n-introns deviating from the expected 3n value		(3n - (number of introns/3)/intron #)
 	
 	# Get values
+		if (scalar @{$intron_columns[1]}) {
 		## Prepare variables
 			my $nr_introns 	= scalar @{$intron_columns[1]};
 			my $three_n 	= 0;
@@ -1319,7 +1320,10 @@ foreach $out_name (keys %input) {
 		## Calculate values
 			my $excess_3n 	= sprintf "%.3f", ( ($three_n - (($three_n1 + $three_n2)/2)) / $nr_introns);
 			my $dev_exp_3n	= sprintf "%.3f", ( ($three_n - ($nr_introns/3)) / $nr_introns);
-		
+		}
+		else {
+			print "WARN: No introns were found, no intron distribution was calculated! $n$!$n";
+		}	
 
 ######## Overlap check ###########################
 my %overlapping_transcripts;
