@@ -757,7 +757,7 @@ foreach $out_name (keys %input) {
 		# Flags for presence of CDS / exons in complete annotation
 		my $overall_cds_presence = $features->search({type => 'CDS'});
 		my $overall_exon_presence = $features->search({type=> 'exon'});
-	
+		my $overall_intron_presence = $features->search({type=> 'intron'});
 	
 	
 	# Get an iterator for all genes
@@ -1302,12 +1302,19 @@ foreach $out_name (keys %input) {
 		## DevExp 3n:	Fraction of 3n-introns deviating from the expected 3n value		(3n - (number of introns/3)/intron #)
 	
 	# Get values
-		if (scalar @{$intron_columns[1]}) {
+	my $nr_introns	= 'NA';
+	my $three_n	= 'NA';
+	my $three_n1	= 'NA';
+	my $three_n2	= 'NA';
+	my $excess_3n	= 'NA';
+	my $dev_exp_3n	= 'NA';
+	
+		if ($overall_intron_presence) {
 		## Prepare variables
-			my $nr_introns 	= scalar @{$intron_columns[1]};
-			my $three_n 	= 0;
-			my $three_n1	= 0;
-			my $three_n2	= 0;
+			$nr_introns 	= scalar @{$intron_columns[1]};
+			$three_n 	= 0;
+			$three_n1	= 0;
+			$three_n2	= 0;
 	
 		## Go through intron lengths
 			foreach my $length (@{$intron_columns[1]}) {
@@ -1318,8 +1325,8 @@ foreach $out_name (keys %input) {
 			}
 		
 		## Calculate values
-			my $excess_3n 	= sprintf "%.3f", ( ($three_n - (($three_n1 + $three_n2)/2)) / $nr_introns);
-			my $dev_exp_3n	= sprintf "%.3f", ( ($three_n - ($nr_introns/3)) / $nr_introns);
+			$excess_3n 	= sprintf "%.3f", ( ($three_n - (($three_n1 + $three_n2)/2)) / $nr_introns);
+			$dev_exp_3n	= sprintf "%.3f", ( ($three_n - ($nr_introns/3)) / $nr_introns);
 		}
 		else {
 			print "WARN: No introns were found, no intron distribution was calculated! $n$!$n";
@@ -1404,15 +1411,15 @@ foreach my $trnscrpt (keys %transcript_loci) {
 					printf $out_summary "${t}%.0f${t}%.2f", $non_iso_transcript_nr,($non_iso_transcript_nr/$counts{$child_type}*100);
 					print  $out_summary ' %';
 				}
-				elsif 	($type eq 'mRNA' and $child_type eq 'intron') {
+				elsif 	($type eq 'mRNA' and $child_type eq 'intron' and $overall_intron_presence) {
 					printf $out_summary "${t}%.0f${t}%.2f", scalar @{$intron_columns[1]}, (scalar @{$intron_columns[1]}/$counts{$child_type}*100);
 					print  $out_summary ' %';
 				}
-				elsif 	($type eq 'mRNA' and $child_type eq 'exon') {
+				elsif 	($type eq 'mRNA' and $child_type eq 'exon' and $overall_exon_presence) {
 					printf $out_summary "${t}%.0f${t}%.2f", scalar @{$exon_columns[1]}, (scalar @{$exon_columns[1]}/$counts{$child_type}*100);
 					print  $out_summary ' %';
 				}
-				elsif 	($type eq 'mRNA' and $child_type eq 'CDS') {
+				elsif 	($type eq 'mRNA' and $child_type eq 'CDS' and $overall_cds_presence) {
 					printf $out_summary "${t}%.0f${t}%.2f", scalar @{$cds_columns[1]}, (scalar @{$cds_columns[1]}/$counts{$child_type}*100);
 					print  $out_summary ' %';
 				}
@@ -1458,7 +1465,6 @@ foreach my $trnscrpt (keys %transcript_loci) {
 			print $out_summary "Intron count${t}3n${t}3n+1${t}3n+2${t}Excess 3n${t}Deviation from expected 3n$n";
 			print $out_summary "$nr_introns${t}$three_n${t}$three_n1${t}$three_n2${t}$excess_3n${t}$dev_exp_3n$n$n";
 		
-		
 		# Scaffold values 
 			print $out_summary "# TRANSCRIPT DATA per Scaffold${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'Transcript count per scaffold', 									$scaff_columns[ 5]);
@@ -1466,23 +1472,38 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				print_stats($out_summary, 'Transcript coverage (added transcript length / scaff length)', 	$scaff_columns[ 7]);
 				print_stats($out_summary, 'Transcript density (transcript count / scaff length)', 			$scaff_columns[ 8]);
 				
-			print $out_summary "$n# CDS DATA per Scaffold${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n" if $overall_cds_presence;
-				print_stats($out_summary, 'CDS count per scaffold', 										$scaff_columns[ 9]) if $overall_cds_presence;
-				print_stats($out_summary, 'Added CDS length per scaffold', 									$scaff_columns[10]) if $overall_cds_presence;
-				print_stats($out_summary, 'CDS count per scaffold', 										$scaff_columns[11]) if $overall_cds_presence;
-				print_stats($out_summary, 'CDS density (CDS count / scaff length)', 						$scaff_columns[12]) if $overall_cds_presence;
+			print $out_summary "$n# CDS DATA per Scaffold${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
+			if ($overall_cds_presence) {
+				print_stats($out_summary, 'CDS count per scaffold', 										$scaff_columns[ 9]);
+				print_stats($out_summary, 'Added CDS length per scaffold', 									$scaff_columns[10]);
+				print_stats($out_summary, 'CDS count per scaffold', 										$scaff_columns[11]);
+				print_stats($out_summary, 'CDS density (CDS count / scaff length)', 						$scaff_columns[12]);
+			}
+			else {
+				print $out_summary "No CDS data available. $n";
+			}			
 				
-			print $out_summary "$n# EXON DATA per Scaffold${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n" if $overall_exon_presence;
-				print_stats($out_summary, 'Exon count per scaffold',										$scaff_columns[13]) if $overall_exon_presence;
-				print_stats($out_summary, 'Added exon length per scaffold', 								$scaff_columns[14]) if $overall_exon_presence;
-				print_stats($out_summary, 'Exon coverage (added exon length / scaff length)',				$scaff_columns[15]) if $overall_exon_presence;
-				print_stats($out_summary, 'Exon density (exon count / scaff length)', 						$scaff_columns[16]) if $overall_exon_presence;
+			print $out_summary "$n# EXON DATA per Scaffold${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
+			if ($overall_exon_presence) {
+				print_stats($out_summary, 'Exon count per scaffold',										$scaff_columns[13]);
+				print_stats($out_summary, 'Added exon length per scaffold', 								$scaff_columns[14]);
+				print_stats($out_summary, 'Exon coverage (added exon length / scaff length)',				$scaff_columns[15]);
+				print_stats($out_summary, 'Exon density (exon count / scaff length)', 						$scaff_columns[16]);
+			}
+			else {
+				print $out_summary "No exon data available. $n";
+			}				
 		
 			print $out_summary "$n# INTRON DATA per Scaffold${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
+			if ($overall_intron_presence) {
 				print_stats($out_summary, 'Intron count per scaffold', 										$scaff_columns[17]);
 				print_stats($out_summary, 'Added intron length per scaffold', 								$scaff_columns[18]);
 				print_stats($out_summary, 'Intron coverage (added intron length / scaff length)', 			$scaff_columns[19]);
 				print_stats($out_summary, 'Intron density (intron count / scaff length)', 					$scaff_columns[20]);
+			}
+			else {
+				print $out_summary "No intron data available. $n";
+			}					
 		
 		
 		# Lengths
@@ -1492,23 +1513,23 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				print_stats($out_summary, 'Protein', 				$transcript_columns[ 6], 'sum');			
 				print_stats($out_summary, 'CDS', 					$cds_columns[ 1], 'sum') if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 					$exon_columns[ 1], 'sum') if $overall_exon_presence;
-				print_stats($out_summary, 'Intron', 				$intron_columns[ 1], 'sum');
+				print_stats($out_summary, 'Intron', 				$intron_columns[ 1], 'sum') 	if $overall_intron_presence;
 		
 			print  $out_summary "$n# Added LENGTHs per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[ 9]) 	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[20]) 	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron', $transcript_columns[31]);
+				print_stats($out_summary, 'Intron', $transcript_columns[31]) 		if $overall_intron_presence;
 			
 			print  $out_summary "$n# Median LENGTHs per transcript$n";
 				print $out_summary "${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[10])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[21]) 	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[32]);
+				print_stats($out_summary, 'Intron',	$transcript_columns[32]) 	if $overall_intron_presence;
 				
 			print  $out_summary "$n# Mean LENGTHs per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[11]) 	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[22]) 	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron', $transcript_columns[33]);
+				print_stats($out_summary, 'Intron', $transcript_columns[33]) 		if $overall_intron_presence;
 		
 		# GC contents
 			print $out_summary  "$n# Individual GC CONTENT${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
@@ -1519,7 +1540,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				print_stats($out_summary, 'Exon', 							$exon_columns[2])		if $overall_exon_presence;
 				print_stats($out_summary, 'Exon (without ambiguity)',		$exon_columns[3])		if $overall_exon_presence;	
 				print_stats($out_summary, 'Intron',							$intron_columns[2]);
-				print_stats($out_summary, 'Intron (without ambiguity)', 	$intron_columns[3]);
+				print_stats($out_summary, 'Intron (without ambiguity)', 	$intron_columns[3]) 		if $overall_intron_presence;
 			
 			print $out_summary  "$n# Median GC CONTENT per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 						$transcript_columns[12])	if $overall_cds_presence;
@@ -1527,7 +1548,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				print_stats($out_summary, 'Exon', 						$transcript_columns[23])	if $overall_exon_presence;
 				print_stats($out_summary, 'Exon (without ambiguity)', 	$transcript_columns[25]) 	if $overall_exon_presence;	
 				print_stats($out_summary, 'Intron', 					$transcript_columns[34]);
-				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[36]);
+				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[36])	 if $overall_intron_presence;
 				
 			print $out_summary  "$n# Mean GC CONTENT per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 						$transcript_columns[13])	if $overall_cds_presence;
@@ -1535,38 +1556,38 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				print_stats($out_summary, 'Exon', 						$transcript_columns[24])	if $overall_exon_presence;
 				print_stats($out_summary, 'Exon (without ambiguity)',	$transcript_columns[26])	if $overall_exon_presence;	
 				print_stats($out_summary, 'Intron', 					$transcript_columns[35]);
-				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[37]);
+				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[37])	 if $overall_intron_presence;
 		
 		# CpG o/e
 			print $out_summary  "$n# Individual CpG o/e values${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'Transcript',					$transcript_columns[ 4]);
 				print_stats($out_summary, 'CDS', 						$cds_columns[4]) 		if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 						$exon_columns[4])		if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',						$intron_columns[4]);
+				print_stats($out_summary, 'Intron',						$intron_columns[4])		 if $overall_intron_presence;
 				
 			print $out_summary  "$n# Median CpG o/e values per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[16])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[27]) 	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[38]);
+				print_stats($out_summary, 'Intron',	$transcript_columns[38])	 if $overall_intron_presence;
 		
 		# Counts	
 			print  $out_summary "$n# COUNTS per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'Alternative Spliceforms', 	$transcript_columns[ 7]);
 				print_stats($out_summary, 'CDS', 	$transcript_columns[ 8])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[19])	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[30]);
+				print_stats($out_summary, 'Intron',	$transcript_columns[30])	 if $overall_intron_presence;
 		
 		# Coverages
 			print  $out_summary "$n# COVERAGES per transcript (length x / transcript length)${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[17])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[28])	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[39]); 
+				print_stats($out_summary, 'Intron',	$transcript_columns[39])	 if $overall_intron_presence; 
 		
 		# Densities
 			print  $out_summary "$n# DENSITIES per transcript (# x / transcript length)${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[18])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[29])	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[40]); 
+				print_stats($out_summary, 'Intron',	$transcript_columns[40])	 if $overall_intron_presence; 
 		
 		# Overlapping transcripts
 			if (keys %overlapping_transcripts) {
@@ -1732,7 +1753,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				print $OUT_t_general	"Transcript ID${t}", $head_t_general	if $print_file[ 7];
 				print $OUT_t_cds		"Transcript ID${t}", $head_t_cds		if $overall_cds_presence and $print_file[ 8];
 				print $OUT_t_e			"Transcript ID${t}", $head_t_e			if $overall_exon_presence and $print_file[ 9];
-				print $OUT_t_i			"Transcript ID${t}", $head_t_i			if $print_file[10];
+				print $OUT_t_i			"Transcript ID${t}", $head_t_i			if $overall_intron_presence and $print_file[10];
 		
 			## Print transcript data to desired files (sorted by transcript ID)
 				for my $i (0 .. $#transcript_rows_IDsort) {
@@ -1771,29 +1792,43 @@ foreach my $trnscrpt (keys %transcript_loci) {
 		my $head_cds_e_i = "ID${t}Transcript ID${t}Length${t}GC content${t}GC content without ambiguity${t}CpG o/e${t}Strand$n";
 	
 	# Print CDS file
-		if ($print_file[11]) {
+		if ($print_file[11] and $overall_cds_presence) {
 			print "# Printing CDS data...$n";	
-			print $OUT_cdss $head_cds_e_i;
-			foreach my $ID (sort keys %cds_features) {
-				print $OUT_cdss join ($t, $ID, @{$cds_features{$ID}}), $n;
+			if ($overall_cds_presence) {
+				print $OUT_cdss $head_cds_e_i;
+				foreach my $ID (sort keys %cds_features) {
+					print $OUT_cdss join ($t, $ID, @{$cds_features{$ID}}), $n;
+				}
 			}
+			else {
+				print "FAIL: No CDSs present, cannot print CDS data. $n";
+			}	
 		}
 		
 	# Print exon file
-		if ($print_file[12]) {
+		if ($print_file[12] and $overall_exon_presence) {
 			print "# Printing exon data...$n";	
-			print $OUT_exons $head_cds_e_i;
-			foreach my $ID (sort keys %exon_features) {
-				print $OUT_exons join ($t, $ID, @{$exon_features{$ID}}), $n;
+			if ($overall_exon_presence) {
+				print $OUT_exons $head_cds_e_i;
+				foreach my $ID (sort keys %exon_features) {
+					print $OUT_exons join ($t, $ID, @{$exon_features{$ID}}), $n;
+				}
+			}
+			else {
+				print "FAIL: No exons present, cannot print exon data. $n";
 			}
 		}
 	
 	# Print intron file
-		if ($print_file[13]) {
+		if ($print_file[13] and $overall_intron_presence) {
 			print "# Printing intron data...$n";	
-			print $OUT_introns $head_cds_e_i;
-			foreach my $ID (sort{$a <=> $b} keys %intron_features) {
-				print $OUT_introns join ($t, $ID, @{$intron_features{$ID}}), $n;
+			if ($overall_intron_presence) {
+				print $OUT_introns $head_cds_e_i;
+				foreach my $ID (sort{$a <=> $b} keys %intron_features) {
+					print $OUT_introns join ($t, $ID, @{$intron_features{$ID}}), $n;
+				}
+			else {
+				print "FAIL: No introns present, cannot print intron data. $n";
 			}
 		}
 	
@@ -1802,6 +1837,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 	
 	if ($batch_name) {
 		print "# Printing data to batch files...$n";
+		if ($overall_cds_presence or $overall_exon_presence) {
 		
 		# Batch GENERAL
 		if ($print_file[14]) {
@@ -1829,6 +1865,14 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				print $OUT_batch_general $head_batch_general;
 			}
 			## Append data line
+			my $i_c 	= 'NA';
+			my $cds_c	= 'NA';
+			my $e_c 	= 'NA';
+				
+			$cds_c 	= scalar @{$cds_columns[ 1]} 	if $overall_cds_presence;
+			$e_c 	= scalar @{$exon_columns[ 1]}	if $overall_exon_presence;
+			$i_c 	= scalar @{$intron_columns[ 1]}	if $overall_intron_presence;			
+			
 			print $OUT_batch_general join("\t", $out_name, 
 												$formatted_ass_length, 
 												$formatted_ass_length_noN, 
@@ -1841,9 +1885,9 @@ foreach my $trnscrpt (keys %transcript_loci) {
 												$L90_genes,
 												scalar @scaff_IDs,
 												$non_iso_transcript_nr,
-												scalar @{$cds_columns[ 1]},
-												scalar @{$exon_columns[ 1]},
-												scalar @{$intron_columns[ 1]},
+												$cds_c,
+												$e_c,
+												$i_c,
 												$three_n, $three_n1, $three_n2, $excess_3n, $dev_exp_3n,
 										), $n;
 		}
@@ -2073,11 +2117,16 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				}
 			
 			## Calculate values, format as MB / %
+				my $CDS_size_Mb	= 'NA';
+				my $i_size_Mb	= 'NA';
+				my $perc_CDS	= 'NA';
+				my $perc_i		= 'NA';
+				
 				my $assembly_size_Mb = $assembly_length/1000000;
-				my $CDS_size_Mb 	 = (sum_def(@{$cds_columns[ 1]}))/1000000;
-				my $i_size_Mb		 = (sum_def(@{$intron_columns[ 1]}))/1000000;
-				my $perc_CDS		 = sprintf ("%.3f", ($CDS_size_Mb*100)/$assembly_size_Mb);
-				my $perc_i			 = sprintf ("%.3f", ($i_size_Mb*100)/$assembly_size_Mb);
+				$CDS_size_Mb 	 = (sum_def(@{$cds_columns[ 1]}))/1000000		if $overall_cds_presence;
+				$i_size_Mb		 = (sum_def(@{$intron_columns[ 1]}))/1000000	if $overall_intron_presence;
+				$perc_CDS		 = sprintf ("%.3f", ($CDS_size_Mb*100)/$assembly_size_Mb)	if $overall_cds_presence
+				$perc_i			 = sprintf ("%.3f", ($i_size_Mb*100)/$assembly_size_Mb)		if $overall_intron_presence;
 			
 			## Prepare line for printing
 				my $compsize_line = join("\t", $out_name, $assembly_size_Mb, $CDS_size_Mb, $i_size_Mb, '', '', '', '', $perc_CDS,$perc_i, '', '', ''
@@ -2085,6 +2134,12 @@ foreach my $trnscrpt (keys %transcript_loci) {
 			## Print
 			print $out_compsize $compsize_line, $n;
 		}
+	}
+		
+	# no cds or exon data
+	else {
+		print "FAIL: Cannot print batch files without CDS or exon data...$n";
+	}
 		
 		# BASH COMMAND FILE
 		
