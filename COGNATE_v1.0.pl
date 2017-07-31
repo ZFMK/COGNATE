@@ -641,17 +641,16 @@ foreach $out_name (keys %input) {
 		## Assembly CpG o/e
 		
 			### Calculate frequencies of C, G and CG
-				my $freq_C 		= $assembly_nr_C/$assembly_length;
-				my $freq_G 		= $assembly_nr_G/$assembly_length;
-				my $freq_CG		= $assembly_nr_CG/($assembly_length - 1);
+			my $freq_C 	= $assembly_nr_C/$assembly_length;
+			my $freq_G 	= $assembly_nr_G/$assembly_length;
+			my $freq_CG	= $assembly_nr_CG/($assembly_length - 1);
 				
-				my $freq_C_noN	= $assembly_nr_C/$assembly_length_noN;
-				my $freq_G_noN	= $assembly_nr_G/$assembly_length_noN;
-				my $freq_CG_noN	= $assembly_nr_CG/($assembly_length_noN - 1);
+			my $freq_C_noN	= $assembly_nr_C/$assembly_length_noN;
+			my $freq_G_noN	= $assembly_nr_G/$assembly_length_noN;
+			my $freq_CG_noN	= $assembly_nr_CG/($assembly_length_noN - 1);	
 				
-				
-				my $assembly_CpGoe 		= sprintf "%.3f", ($freq_CG / ($freq_C * $freq_G));
-				my $assembly_CpGoe_noN 	= sprintf "%.3f", ($freq_CG_noN / ($freq_C_noN * $freq_G_noN));
+			my $assembly_CpGoe 	= sprintf "%.3f", ($freq_CG / ($freq_C * $freq_G));
+			my $assembly_CpGoe_noN 	= sprintf "%.3f", ($freq_CG_noN / ($freq_C_noN * $freq_G_noN));
 	
 	
 ################ TRANSCRIPTS #######################
@@ -1220,7 +1219,7 @@ foreach $out_name (keys %input) {
 	
 	# Elements of scaffolds
 		my @scaff_rows_IDsort		= @scaff_features{sort {$a cmp $b} keys %scaff_features};
-		my @scaff_columns			= transpose(\@scaff_rows_IDsort);
+		my @scaff_columns		= transpose(\@scaff_rows_IDsort);
 		#my @scaff_rows_ValSort		= transpose_sort_transpose(\@scaff_rows_IDsort);
 	
 	# Elements of transcripts
@@ -1229,18 +1228,18 @@ foreach $out_name (keys %input) {
 		#
 	
 	# Elements of CDSs
-		my @cds_rows_IDsort			= @cds_features{sort {$a cmp $b} keys %cds_features} 	if $overall_cds_presence;
-		my @cds_columns				= transpose(\@cds_rows_IDsort)							if $overall_cds_presence;
+		my @cds_rows_IDsort		= @cds_features{sort {$a cmp $b} keys %cds_features} 	if $overall_cds_presence;
+		my @cds_columns			= transpose(\@cds_rows_IDsort)							if $overall_cds_presence;
 		#
 	
 	# Elements of exons
 		my @exon_rows_IDsort		= @exon_features{sort {$a cmp $b} keys %exon_features}	if $overall_exon_presence;
-		my @exon_columns			= transpose(\@exon_rows_IDsort)							if $overall_exon_presence;
+		my @exon_columns		= transpose(\@exon_rows_IDsort)							if $overall_exon_presence;
 		#
 	
 	# Elements of introns
 		my @intron_rows_IDsort		= @intron_features{sort {$a cmp $b} keys %intron_features};
-		my @intron_columns			= transpose(\@intron_rows_IDsort);
+		my @intron_columns		= transpose(\@intron_rows_IDsort);
 		#
 	
 	
@@ -1286,9 +1285,9 @@ foreach $out_name (keys %input) {
 				}
 				
 		## Format lengths
-			my $formatted_ass_length 		= $en->format_number($assembly_length);
+			my $formatted_ass_length 	= $en->format_number($assembly_length);
 			my $formatted_ass_length_noN	= $en->format_number($assembly_length_noN);
-			my $perc_Ns						= sprintf ("%.2f" ,($assembly_Ns/$assembly_length)*100);
+			my $perc_Ns			= sprintf ("%.2f" ,($assembly_Ns/$assembly_length)*100);
 	
 	
 ######## INTRON distribution a la Roy & Penny 2007 ####
@@ -1444,7 +1443,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 			print $out_summary "Percentage of Ns in assembly${t}${t}$perc_Ns %$n$n";
 		
 			# Assembly GCs
-			my $formatted_GCs 				= $en->format_number($assembly_GCs);
+			my $formatted_GCs = $en->format_number($assembly_GCs);
 			print $out_summary "Total number of GC bases in assembly${t}${t}${formatted_GCs}$n";
 			print $out_summary "Assembly GC content (GC/total length)${t}${t}${assembly_GCratio} %$n";
 			print $out_summary "Assembly GC content without ambiguity (GCS/length-NRYKMBDHV)${t}${t}${assembly_GCnoAmratio} %$n$n";
@@ -1508,17 +1507,17 @@ foreach my $trnscrpt (keys %transcript_loci) {
 		
 		# Lengths
 			print  $out_summary "$n# Individual LENGTHs${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation${t}Sum$n";
-				print_stats($out_summary, 'Scaffold',				$scaff_columns[ 1]);
+				print_stats($out_summary, 'Scaffold',			$scaff_columns[ 1]);
 				print_stats($out_summary, 'Transcript (genomic)',	$transcript_columns[ 1], 'sum');	
-				print_stats($out_summary, 'Protein', 				$transcript_columns[ 6], 'sum');			
-				print_stats($out_summary, 'CDS', 					$cds_columns[ 1], 'sum') if $overall_cds_presence;
-				print_stats($out_summary, 'Exon', 					$exon_columns[ 1], 'sum') if $overall_exon_presence;
-				print_stats($out_summary, 'Intron', 				$intron_columns[ 1], 'sum') 	if $overall_intron_presence;
+				print_stats($out_summary, 'Protein', 			$transcript_columns[ 6], 'sum');			
+				print_stats($out_summary, 'CDS', 			$cds_columns[ 1], 'sum') 	if $overall_cds_presence;
+				print_stats($out_summary, 'Exon', 			$exon_columns[ 1], 'sum') 	if $overall_exon_presence;
+				print_stats($out_summary, 'Intron', 			$intron_columns[ 1], 'sum') 	if $overall_intron_presence;
 		
 			print  $out_summary "$n# Added LENGTHs per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[ 9]) 	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[20]) 	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron', $transcript_columns[31]) 		if $overall_intron_presence;
+				print_stats($out_summary, 'Intron', 	$transcript_columns[31]) 	if $overall_intron_presence;
 			
 			print  $out_summary "$n# Median LENGTHs per transcript$n";
 				print $out_summary "${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
@@ -1529,65 +1528,65 @@ foreach my $trnscrpt (keys %transcript_loci) {
 			print  $out_summary "$n# Mean LENGTHs per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[11]) 	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[22]) 	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron', $transcript_columns[33]) 		if $overall_intron_presence;
+				print_stats($out_summary, 'Intron', 	$transcript_columns[33]) 	if $overall_intron_presence;
 		
 		# GC contents
 			print $out_summary  "$n# Individual GC CONTENT${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
-				print_stats($out_summary, 'Transcript',						$transcript_columns[2]);
+				print_stats($out_summary, 'Transcript',				$transcript_columns[2]);
 				print_stats($out_summary, 'Transcript (without ambiguity)',	$transcript_columns[3]);	
-				print_stats($out_summary, 'CDS', 							$cds_columns[2])		if $overall_cds_presence;
-				print_stats($out_summary, 'CDS (without ambiguity)', 		$cds_columns[3])		if $overall_cds_presence;	
-				print_stats($out_summary, 'Exon', 							$exon_columns[2])		if $overall_exon_presence;
-				print_stats($out_summary, 'Exon (without ambiguity)',		$exon_columns[3])		if $overall_exon_presence;	
-				print_stats($out_summary, 'Intron',							$intron_columns[2]);
-				print_stats($out_summary, 'Intron (without ambiguity)', 	$intron_columns[3]) 		if $overall_intron_presence;
+				print_stats($out_summary, 'CDS', 				$cds_columns[2])	if $overall_cds_presence;
+				print_stats($out_summary, 'CDS (without ambiguity)', 		$cds_columns[3])	if $overall_cds_presence;	
+				print_stats($out_summary, 'Exon', 				$exon_columns[2])	if $overall_exon_presence;
+				print_stats($out_summary, 'Exon (without ambiguity)',		$exon_columns[3])	if $overall_exon_presence;	
+				print_stats($out_summary, 'Intron',				$intron_columns[2]) 	if $overall_intron_presence;
+				print_stats($out_summary, 'Intron (without ambiguity)', 	$intron_columns[3]) 	if $overall_intron_presence;
 			
 			print $out_summary  "$n# Median GC CONTENT per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
-				print_stats($out_summary, 'CDS', 						$transcript_columns[12])	if $overall_cds_presence;
+				print_stats($out_summary, 'CDS', 			$transcript_columns[12])	if $overall_cds_presence;
 				print_stats($out_summary, 'CDS (without ambiguity)',	$transcript_columns[14])	if $overall_cds_presence;
-				print_stats($out_summary, 'Exon', 						$transcript_columns[23])	if $overall_exon_presence;
+				print_stats($out_summary, 'Exon', 			$transcript_columns[23])	if $overall_exon_presence;
 				print_stats($out_summary, 'Exon (without ambiguity)', 	$transcript_columns[25]) 	if $overall_exon_presence;	
-				print_stats($out_summary, 'Intron', 					$transcript_columns[34]);
-				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[36])	 if $overall_intron_presence;
+				print_stats($out_summary, 'Intron', 			$transcript_columns[34])	if $overall_intron_presence;
+				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[36])	if $overall_intron_presence;
 				
 			print $out_summary  "$n# Mean GC CONTENT per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
-				print_stats($out_summary, 'CDS', 						$transcript_columns[13])	if $overall_cds_presence;
+				print_stats($out_summary, 'CDS', 			$transcript_columns[13])	if $overall_cds_presence;
 				print_stats($out_summary, 'CDS (without ambiguity)',	$transcript_columns[15])	if $overall_cds_presence;	
-				print_stats($out_summary, 'Exon', 						$transcript_columns[24])	if $overall_exon_presence;
+				print_stats($out_summary, 'Exon', 			$transcript_columns[24])	if $overall_exon_presence;
 				print_stats($out_summary, 'Exon (without ambiguity)',	$transcript_columns[26])	if $overall_exon_presence;	
-				print_stats($out_summary, 'Intron', 					$transcript_columns[35]);
-				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[37])	 if $overall_intron_presence;
+				print_stats($out_summary, 'Intron', 			$transcript_columns[35])	if $overall_intron_presence;
+				print_stats($out_summary, 'Intron (without ambiguity)',	$transcript_columns[37])	if $overall_intron_presence;
 		
 		# CpG o/e
 			print $out_summary  "$n# Individual CpG o/e values${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
-				print_stats($out_summary, 'Transcript',					$transcript_columns[ 4]);
-				print_stats($out_summary, 'CDS', 						$cds_columns[4]) 		if $overall_cds_presence;
-				print_stats($out_summary, 'Exon', 						$exon_columns[4])		if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',						$intron_columns[4])		 if $overall_intron_presence;
+				print_stats($out_summary, 'Transcript',			$transcript_columns[ 4]);
+				print_stats($out_summary, 'CDS', 			$cds_columns[4]) 		if $overall_cds_presence;
+				print_stats($out_summary, 'Exon', 			$exon_columns[4])		if $overall_exon_presence;
+				print_stats($out_summary, 'Intron',			$intron_columns[4])		if $overall_intron_presence;
 				
 			print $out_summary  "$n# Median CpG o/e values per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[16])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[27]) 	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[38])	 if $overall_intron_presence;
+				print_stats($out_summary, 'Intron',	$transcript_columns[38])	if $overall_intron_presence;
 		
 		# Counts	
 			print  $out_summary "$n# COUNTS per transcript${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'Alternative Spliceforms', 	$transcript_columns[ 7]);
 				print_stats($out_summary, 'CDS', 	$transcript_columns[ 8])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[19])	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[30])	 if $overall_intron_presence;
+				print_stats($out_summary, 'Intron',	$transcript_columns[30])	if $overall_intron_presence;
 		
 		# Coverages
 			print  $out_summary "$n# COVERAGES per transcript (length x / transcript length)${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[17])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[28])	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[39])	 if $overall_intron_presence; 
+				print_stats($out_summary, 'Intron',	$transcript_columns[39])	if $overall_intron_presence; 
 		
 		# Densities
 			print  $out_summary "$n# DENSITIES per transcript (# x / transcript length)${t}Minimum${t}Maximum${t}Mean${t}Median${t}Variance${t}Standard deviation$n";
 				print_stats($out_summary, 'CDS', 	$transcript_columns[18])	if $overall_cds_presence;
 				print_stats($out_summary, 'Exon', 	$transcript_columns[29])	if $overall_exon_presence;
-				print_stats($out_summary, 'Intron',	$transcript_columns[40])	 if $overall_intron_presence; 
+				print_stats($out_summary, 'Intron',	$transcript_columns[40])	if $overall_intron_presence; 
 		
 		# Overlapping transcripts
 			if (keys %overlapping_transcripts) {
@@ -1665,7 +1664,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 		# Print ID referenced files
 			
 			## Print header to desired scaffold files
-				print $OUT_s_general "Scaffold ID${t}", $head_s_general	if $print_file[ 2];
+				print $OUT_s_general 	"Scaffold ID${t}", $head_s_general	if $print_file[ 2];
 				print $OUT_s_t		 "Scaffold ID${t}", $head_s_t		if $print_file[ 3];
 				print $OUT_s_cds 	 "Scaffold ID${t}", $head_s_cds		if $print_file[ 4];
 				print $OUT_s_e 		 "Scaffold ID${t}", $head_s_e		if $print_file[ 5];
@@ -1827,6 +1826,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				foreach my $ID (sort{$a <=> $b} keys %intron_features) {
 					print $OUT_introns join ($t, $ID, @{$intron_features{$ID}}), $n;
 				}
+			}
 			else {
 				print "FAIL: No introns present, cannot print intron data. $n";
 			}
@@ -1835,9 +1835,9 @@ foreach my $trnscrpt (keys %transcript_loci) {
 	
 ###################### SUMMARY LINE to BATCH FILE #####################
 	
-	if ($batch_name) {
-		print "# Printing data to batch files...$n";
-		if ($overall_cds_presence or $overall_exon_presence) {
+if ($batch_name) {
+	print "# Printing data to batch files...$n";
+	if ($overall_cds_presence or $overall_exon_presence) {
 		
 		# Batch GENERAL
 		if ($print_file[14]) {
@@ -2125,7 +2125,7 @@ foreach my $trnscrpt (keys %transcript_loci) {
 				my $assembly_size_Mb = $assembly_length/1000000;
 				$CDS_size_Mb 	 = (sum_def(@{$cds_columns[ 1]}))/1000000		if $overall_cds_presence;
 				$i_size_Mb		 = (sum_def(@{$intron_columns[ 1]}))/1000000	if $overall_intron_presence;
-				$perc_CDS		 = sprintf ("%.3f", ($CDS_size_Mb*100)/$assembly_size_Mb)	if $overall_cds_presence
+				$perc_CDS		 = sprintf ("%.3f", ($CDS_size_Mb*100)/$assembly_size_Mb)	if $overall_cds_presence;
 				$perc_i			 = sprintf ("%.3f", ($i_size_Mb*100)/$assembly_size_Mb)		if $overall_intron_presence;
 			
 			## Prepare line for printing
@@ -2140,11 +2140,12 @@ foreach my $trnscrpt (keys %transcript_loci) {
 	else {
 		print "FAIL: Cannot print batch files without CDS or exon data...$n";
 	}
+	
 		
-		# BASH COMMAND FILE
+	# BASH COMMAND FILE
 		
-		if ($print_file[20]) {
-			my $command = "
+	if ($print_file[20]) {
+		my $command = "
 echo '$out_name'
 python BUSCO_v1.1.py \\
 -in ${cwd}/COGNATE_${out_name}/${out_name}_00-analyzed_transcripts.fa \\
@@ -2153,9 +2154,9 @@ python BUSCO_v1.1.py \\
 1>> busco_LOG.log 2>&1 
 ";
 		
-			print $out_bash $command, $n;
-		}
+		print $out_bash $command, $n;
 	}
+}
 	
 	
 	
@@ -2165,23 +2166,23 @@ python BUSCO_v1.1.py \\
 ###################### FINISH ##########################################
 	close $out_fa				if $print_file[ 0];
 	close $out_summary			if $print_file[ 1];
-	close $OUT_s_general		if $print_file[ 2];
+	close $OUT_s_general			if $print_file[ 2];
 	close $OUT_s_t				if $print_file[ 3];
 	close $OUT_s_cds			if $print_file[ 4];
 	close $OUT_s_e				if $print_file[ 5];
 	close $OUT_s_i				if $print_file[ 6];
-	close $OUT_t_general		if $print_file[ 7];
+	close $OUT_t_general			if $print_file[ 7];
 	close $OUT_t_cds			if $print_file[ 8];
 	close $OUT_t_e				if $print_file[ 9];
 	close $OUT_t_i				if $print_file[10];
 	close $OUT_cdss				if $print_file[11];
 	close $OUT_exons			if $print_file[12];
 	close $OUT_introns			if $print_file[13];
-	close $OUT_batch_general	if $batch_name and $print_file[14];
-	close $OUT_batch_s_means	if $batch_name and $print_file[15];
-	close $OUT_batch_s_medians	if $batch_name and $print_file[16];
-	close $OUT_batch_t_means	if $batch_name and $print_file[17];
-	close $OUT_batch_t_medians	if $batch_name and $print_file[18];
+	close $OUT_batch_general		if $batch_name and $print_file[14];
+	close $OUT_batch_s_means		if $batch_name and $print_file[15];
+	close $OUT_batch_s_medians		if $batch_name and $print_file[16];
+	close $OUT_batch_t_means		if $batch_name and $print_file[17];
+	close $OUT_batch_t_medians		if $batch_name and $print_file[18];
 	close $out_compsize			if $batch_name and $print_file[19];
 	close $out_bash				if $batch_name and $print_file[20];
 	  
@@ -2190,11 +2191,11 @@ python BUSCO_v1.1.py \\
 	my ($second, $minute, $hour, $day, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
 	my $year 		= 1900 + $yearOffset;
 	$month 			= $month +1;
-	my $theTime 	= sprintf "$year-$month-$day %02d:%02d:%02d", $hour, $minute, $second;
+	my $theTime 		= sprintf "$year-$month-$day %02d:%02d:%02d", $hour, $minute, $second;
 	
 	# Runtime
 	$now 		= time - $now;
-	my $runTime = sprintf "%02d:%02d:%02d", int($now / 3600), int(($now % 3600) / 60), int($now % 60);
+	my $runTime 	= sprintf "%02d:%02d:%02d", int($now / 3600), int(($now % 3600) / 60), int($now % 60);
 
 	print "$n## DONE with $out_name! ($theTime, run time: $runTime)$n$n";
 	
