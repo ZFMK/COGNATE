@@ -748,7 +748,11 @@ foreach $out_name (keys %input) {
 			#	- collect scaffold id => @skipped_transcripts
 			# 	- go to next transcript (skip)
 			# 	- wrap up: print missing scaffold ids
-	
+
+
+		# Check whether there are transcripts at all!
+		my $overall_tr_presence	= $features->search({type=>'transcript'});
+		die "FATAL: Gff file appears to contain no transcripts. Check your input! (Is parent information included?)$n$n" if $overall_tr_presence == 0;
 	
 		# Introns need handmade ids!
 		my $intron_id 				= 0; 
@@ -2677,7 +2681,13 @@ sub gff_validity {
 		next if $line =~ /^\#\#/;
 		
 		# Get line elements (should be tab-separated)
-		my @line_elements = split ("\t", $line) or die "CHECK FATALITY: Gff columns not tab separated!Check file!$n";
+		my @line_elements = split ("\t", $line) or die "CHECK FATALITY: Gff columns not tab separated! Check file!$n";
+		
+		# Parent information included for all features that are not a gene?
+		if ($line_elements[2] ne 'gene') {
+			$line_elements[8] =~ /Parent=[^;];/ or die "CHECK FATALITY: Gff column 8 does not contain 'Parent=' information for non-gene feature! Check file!$n"
+		}
+		
 		my $region_ID = $line_elements[0];
 		
 		# FORWARD CHECK: Fasta headers present as region IDs in the GFF?
