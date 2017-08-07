@@ -308,6 +308,17 @@ Although COGNATE offers to check the input gff3 for validity, it is always a goo
 The first line of a proper GFF3 file has to look like this:
 ##gff-version 3
 
+COGNATE needs relational information to infer data of your genes. This means, in column 8, parent=ID needs to
+be specified. For example:
+# Col 3    Col 8
+gene      ID=gene_1
+mRNA      ID=mRNA_1;parent=gene_1
+mRNA      ID=mRNA_2;parent=gene_1
+exon      ID=exon_1;parent=mRNA_1
+CDS       ID=cds_1;parent=mRNA_2
+Please have a look at the provided example data from Drosophila to have a live example. 
+Whether parent information is present is checked during the file validity check (run COGNATE without -f option).
+
 For more information on GFF(3) properties, have a look here: 
 https://github.com/The-Sequence-Ontology/Specifications/blob/master/gff3.md
 
