@@ -751,8 +751,8 @@ foreach $out_name (keys %input) {
 
 
 		# Check whether there are transcripts at all!
-		my $overall_tr_presence	= $features->search({type=>'transcript'});
-		die "FATAL: Gff file appears to contain no transcripts. Check your input! (Is parent information included?)$n$n" if $overall_tr_presence == 0;
+		my $overall_tr_presence	= $features->search({type=>'mRNA'});
+		die "FATAL: Gff file appears to contain no mRNAs. Check your input! (Is parent information included?)$n$n" if $overall_tr_presence == 0;
 	
 		# Introns need handmade ids!
 		my $intron_id 				= 0; 
