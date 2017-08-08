@@ -2484,7 +2484,7 @@ sub goto_workingdir {
 
  Usage   : remove_dir($out_name, $def_overwrite);
  Function: Checks whether output directory for given $out_name already exists and, depending on 
-			the user's choice, deletes this directory or not.
+			the users choice, deletes this directory or not.
  Returns : -
  Args    : $out_name, $def_overwrite
  
@@ -2685,7 +2685,7 @@ sub gff_validity {
 		
 		# Parent information included for all features that are not a gene?
 		if ($line_elements[2] ne 'gene') {
-			$line_elements[8] =~ /Parent=[^;];/ or die "CHECK FATALITY: Gff column 8 does not contain 'Parent=' information for non-gene feature! Check file!$n"
+			$line_elements[8] =~ /Parent\=[^;];/ or die "CHECK FATALITY: Gff column 8 does not contain 'Parent=' information for non-gene feature! Check file!$n"
 		}
 		
 		my $region_ID = $line_elements[0];
