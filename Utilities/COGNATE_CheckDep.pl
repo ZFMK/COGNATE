@@ -15,8 +15,8 @@ my $n = "\n";
 ########################################################################
 
 my @deps = qw(FindBin 
-				Bio::DB::Fasta 
-				Number::Format 
+				Bio::DB::Fasta
+				Number::Format
 				List::Util 
 				Statistics::Basic
 				Statistics::Descriptive
@@ -27,6 +27,7 @@ my @deps = qw(FindBin
 				Set::IntSpan::Fast
 				Statistics::Descriptive
 				Text::RecordParser
+				Text::Table
 				IO::Prompt
 				List::MoreUtils
 				TAP::Harness
